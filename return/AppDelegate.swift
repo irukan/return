@@ -11,14 +11,30 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    var ImgMas: ImgMaster!
     var window: UIWindow?
-
+    var WWidth: CGFloat!
+    var WHeight: CGFloat!
+    var SWidth: CGFloat!
+    var SHeight: CGFloat!
+    
+    var titleView : TitleViewController!
+    var gameView : GameViewController!
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
+        WWidth = UIScreen.mainScreen().bounds.size.width
+        WHeight = UIScreen.mainScreen().bounds.size.height
+        SWidth = WWidth
+        SHeight = WWidth
+        
+        ImgMas = ImgMaster()
+        titleView = TitleViewController()
+        gameView = GameViewController()
+        
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        self.window?.rootViewController = ViewController()
+        self.window?.rootViewController = titleView
         self.window?.makeKeyAndVisible()
         
         return true
@@ -45,6 +61,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+ 
+    func getWWidth()->CGFloat
+    {
+        return self.WWidth
+    }
+    func getWHeight()->CGFloat
+    {
+        return self.WHeight
+    }
+    func getSWidth()->CGFloat
+    {
+        return self.SWidth
+    }
+    func getSHeight()->CGFloat
+    {
+        return self.SHeight
+    }
+
 
 
 }
