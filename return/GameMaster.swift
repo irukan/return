@@ -13,9 +13,16 @@ class GameMaster
 {
     var scenePtr:SKScene!
     var m_execCmd:Int?
+    var ad: AppDelegate!
+    
+    var parentViewC : GameViewController!
     
     init()
     {
+        // AppDelegate
+        ad = UIApplication.sharedApplication().delegate as AppDelegate
+        
+        parentViewC = ad.gameView
     }
     
     func setScene(scene: SKScene)
@@ -93,7 +100,8 @@ class GameMaster
 
 
         lbl.runAction(sequence, completion: {() ->Void in
-            self.scenePtr.removeAllChildren()
+            self.scenePtr.removeFromParent()
+            self.parentViewC.dismissViewControllerAnimated(true, completion:nil)
         })
     }
     

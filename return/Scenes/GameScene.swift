@@ -56,7 +56,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.name = "GameScene"
         
         //MapData読み込み
-     let dataPath = NSBundle.mainBundle().pathForResource("data1", ofType: "dat", inDirectory: "MapData")
+        let dataPath = NSBundle.mainBundle().pathForResource("data1", ofType: "dat", inDirectory: "MapData")
 
         let text: String = String(contentsOfFile:dataPath!, encoding: NSUTF8StringEncoding, error: nil)!
         var indX:Int = 0
@@ -100,7 +100,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
         // GameMaster
         gmViewC.gmMaster.setScene(self)
-        gmViewC.gmMaster.setExecCnt(3)
+        gmViewC.gmMaster.setExecCnt(1)
         gmViewC.gmMaster.showExecCnt()
         
         gmViewC.gmMaster.showStart()

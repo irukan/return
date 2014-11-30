@@ -18,6 +18,7 @@ class GameViewController: UIViewController, DDEditorDelegate {
     var debugArea: UITextView!
     var ddEditor: DDEditor!
     
+    var skView: SKView!
     var gmScene: GameScene!
     
     override func viewDidLoad() {
@@ -50,19 +51,18 @@ class GameViewController: UIViewController, DDEditorDelegate {
         self.view.addSubview(ddEditorCover)
         
         // SKView
-        let skView = SKView(frame: CGRectMake(0,0, ad.SWidth, ad.SHeight))
+        skView = SKView(frame: CGRectMake(0,0, ad.SWidth, ad.SHeight))
         skView.showsFPS = true;
         skView.showsNodeCount = true
         self.view.addSubview(skView)
-        
+     }
+    
+    override func viewWillAppear(animated: Bool) {
         //scene1
         gmScene = GameScene(size: CGSizeMake(ad.SWidth, ad.SHeight))
         gmScene.backgroundColor = SKColor.grayColor()
         skView.presentScene(gmScene)
-      
-
     }
-    
 
     func pushCover(sender:UIButton)
     {
