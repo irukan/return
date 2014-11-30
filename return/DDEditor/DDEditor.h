@@ -37,6 +37,7 @@
 -(MyTableViewController*)getTable;
 -(void)argInputView:(NSString*)cmdType cellIndex:(int)cellIndex_in;
 -(void)setTableViewMode:(NSString*)viewMode setView:(UIView*)setView_in;
+-(void)clearTable;
 
 
 @property (strong,readonly)MyTableViewController* tblView;

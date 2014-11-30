@@ -87,6 +87,10 @@
     return tblView;
 }
 
+-(void)clearTable
+{
+    [tblView clear];
+}
 
 -(void)argInputView:(NSString*)cmdType cellIndex:(int)cellIndex_in
 {

@@ -16,6 +16,7 @@ class GameViewController: UIViewController, DDEditorDelegate {
     var gmMaster: GameMaster!
     
     var debugArea: UITextView!
+    var ddEditorCover : UIButton!
     var ddEditor: DDEditor!
     
     var skView: SKView!
@@ -27,10 +28,20 @@ class GameViewController: UIViewController, DDEditorDelegate {
         
         // AppDelegate
         ad = UIApplication.sharedApplication().delegate as AppDelegate
-    
+        
+        // SKView
+        skView = SKView(frame: CGRectMake(0,0, ad.SWidth, ad.SHeight))
+        skView.showsFPS = true;
+        skView.showsNodeCount = true
+        self.view.addSubview(skView)
+        
+        // Tools
         interpreter = MyInterpreter()
         gmMaster = GameMaster()
-
+        
+        // DDEditor
+        ddEditor = DDEditor(frame: ad.window!.frame)
+        
         // DebugArea
         debugArea = UITextView(frame: CGRectMake(ad.WWidth / 2.0, ad.SHeight, ad.WWidth / 2.0, ad.WHeight - ad.SHeight))
         debugArea.layer.borderWidth = 2
@@ -39,31 +50,34 @@ class GameViewController: UIViewController, DDEditorDelegate {
         debugArea.editable = false
         self.view.addSubview(debugArea)
         
+        // ddEditorを覆う透明なCover
+        ddEditorCover = UIButton(frame: ddEditor.tblView.tableView.frame)
+        ddEditorCover.addTarget(self, action: "pushCover:", forControlEvents: UIControlEvents.TouchDown)
+        self.view.addSubview(ddEditorCover)
+     }
+    
+
+    func initGameScene()
+    {
+        
         // DDEditor
-        ddEditor = DDEditor(frame: ad.window!.frame)
+        ddEditor.clearTable()
         ddEditor.setTableViewMode("debugView", setView: self.view)
         ddEditor.delegate = self
         
-        
-        // ddEditorを覆う透明なCover
-        let ddEditorCover : UIButton = UIButton(frame: ddEditor.tblView.tableView.frame)
-        ddEditorCover.addTarget(self, action: "pushCover:", forControlEvents: UIControlEvents.TouchDown)
         self.view.addSubview(ddEditorCover)
         
-        // SKView
-        skView = SKView(frame: CGRectMake(0,0, ad.SWidth, ad.SHeight))
-        skView.showsFPS = true;
-        skView.showsNodeCount = true
-        self.view.addSubview(skView)
-     }
-    
-    override func viewWillAppear(animated: Bool) {
+        // DebugArea
+        self.view.addSubview(debugArea)
+        
         //scene1
         gmScene = GameScene(size: CGSizeMake(ad.SWidth, ad.SHeight))
         gmScene.backgroundColor = SKColor.grayColor()
         skView.presentScene(gmScene)
+        
     }
-
+    
+     
     func pushCover(sender:UIButton)
     {
         ddEditor.setTableViewMode("inputView", setView: ddEditor.view)
@@ -72,6 +86,14 @@ class GameViewController: UIViewController, DDEditorDelegate {
     
     //delegate実装
     func editFinish() {
+        
+        ddEditor.setTableViewMode("debugView", setView: self.view)
+        ddEditor.delegate = self
+        // ddEditorを覆う透明なCover
+        let ddEditorCover : UIButton = UIButton(frame: ddEditor.tblView.tableView.frame)
+        ddEditorCover.addTarget(self, action: "pushCover:", forControlEvents: UIControlEvents.TouchDown)
+        self.view.addSubview(ddEditorCover)
+        
         gmScene.isAnimated = true
         
         let strArr:NSArray = ddEditor.tblView.getSourceData()

@@ -100,7 +100,6 @@ class GameMaster
 
 
         lbl.runAction(sequence, completion: {() ->Void in
-            self.scenePtr.removeFromParent()
             self.parentViewC.dismissViewControllerAnimated(true, completion:nil)
         })
     }
