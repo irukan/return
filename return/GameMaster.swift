@@ -9,9 +9,9 @@
 import Foundation
 import SPriteKit
 
-class GameMaster
+class GameMaster: GameSceneDelegate
 {
-    var scenePtr:SKScene!
+    var scenePtr:GameScene!
     var m_execCmd:Int?
     var ad: AppDelegate!
     
@@ -23,30 +23,43 @@ class GameMaster
         ad = UIApplication.sharedApplication().delegate as AppDelegate
         
         parentViewC = ad.gameView
-    }
-    
-    func setScene(scene: SKScene)
-    {
-        scenePtr = scene
+        
     }
 
-    func setExecCnt(cnt:Int)
-    {
-        m_execCmd = cnt
-    }
-    
-    func execCmd()
-    {
-        m_execCmd = m_execCmd! - 1
-        
+    // delegate 実装
+    func endAnimation() {
+        //アニメーションの終わり
         if(m_execCmd != 0)
         {
-         showExecCnt()
+            showExecCnt()
         }
         else
         {
             showGameOver()
         }
+    }
+    // delegate 実装
+    func reachGoal()
+    {
+        showGoal()
+        //次のAction 選択作る
+    }
+    
+    func setScene(scene: SKScene)
+    {
+        scenePtr = scene as GameScene
+        scenePtr.Mydelegate = self
+    }
+
+    func setExecCnt(cnt:Int)
+    {
+        m_execCmd = cnt
+        showExecCnt()
+    }
+    
+    func execCmd()
+    {
+        m_execCmd = m_execCmd! - 1
     }
     
     func showExecCnt()
@@ -76,8 +89,8 @@ class GameMaster
         
         //表示から消すまでのアニメーション
         let moveDown = SKAction.moveTo(CGPointMake(scenePtr.size.width/2.0, scenePtr.size.height/2.0), duration: 0.5)
-        let wait = SKAction.waitForDuration(1.0)
-        let sequence = SKAction.sequence([moveDown, wait])
+        let wait = SKAction.waitForDuration(0.5)
+        let sequence = SKAction.sequence([wait,moveDown, wait])
         
         lbl.runAction(sequence, completion: {() ->Void in
             lbl.removeFromParent()
@@ -125,11 +138,12 @@ class GameMaster
         scenePtr.addChild(lbl)
         //表示から消すまでのアニメーション
         let moveDown = SKAction.moveTo(CGPointMake(scenePtr.size.width/2.0, scenePtr.size.height/2.0), duration: 0.5)
-        let wait = SKAction.waitForDuration(1.0)
-        let sequence = SKAction.sequence([moveDown, wait])
+        let wait1 = SKAction.waitForDuration(1.0)
+        let wait2 = SKAction.waitForDuration(2.0)
+        let sequence = SKAction.sequence([moveDown, wait1, wait2])
         
         lbl.runAction(sequence, completion: {() ->Void in
-            //lbl.removeFromParent()
+            self.parentViewC.initGameScene("data1")
         })
 
    

@@ -9,6 +9,12 @@
 import UIKit
 import SpriteKit
 
+protocol GameSceneDelegate
+{
+    func endAnimation()
+    func reachGoal()
+}
+
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
  
@@ -27,11 +33,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var isAnimated:Bool!
     
+    var Mydelegate : GameSceneDelegate!
     
-    init(dataName : NSString) {
+    override init() {
         // AppDelegate
         ad = UIApplication.sharedApplication().delegate as AppDelegate
         super.init(size: CGSizeMake(ad.SWidth, ad.SHeight))
+        
+        self.backgroundColor = SKColor.grayColor()
         
         // sellの分割数は15で固定。今後はmapDataから読み込むようにする
         cell = self.size.width / 15
@@ -55,14 +64,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Sceneの名前
         self.name = "GameScene"
+        
+    }
 
+
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func initialize(dataName : NSString)
+    {
+        // GameMaster
+        gmViewC.gmMaster.setScene(self)
+        gmViewC.gmMaster.setExecCnt(1)
+        gmViewC.gmMaster.showExecCnt()
+        
         //MapData読み込み
         let dataPath = NSBundle.mainBundle().pathForResource(dataName, ofType: "dat", inDirectory: "MapData")
         
         let text: String = String(contentsOfFile:dataPath!, encoding: NSUTF8StringEncoding, error: nil)!
         var indX:Int = 0
         var indY:Int = 0
-
+        
         for line in text.componentsSeparatedByString("\r\n")
         {
             
@@ -93,11 +117,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     makeField(indX, indexY: indY)
                 }
                 //原因不明。以下のブロックを入れると、SOurceKitServiceが暴走する
-//                else if(data as NSString == "0")
-//                {
-//                    makeField(indX, indexY: indY)
-//                }
-  
+                //                else if(data as NSString == "0")
+                //                {
+                //                    makeField(indX, indexY: indY)
+                //                }
+                
                 
                 indX++
             }
@@ -108,20 +132,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     }
 
-
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-
     // 画面初期化時に毎回呼ばれる
     override func didMoveToView(view: SKView) {
-        
-        // GameMaster
-        gmViewC.gmMaster.setScene(self)
-        gmViewC.gmMaster.setExecCnt(1)
-        gmViewC.gmMaster.showExecCnt()
         
         gmViewC.gmMaster.showStart()
 
@@ -203,9 +215,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(upTime > 1.0)
         {
 
-            
+
+   
             if (isAnimated == true)
             {
+                // ゴールに到達!!
+                if(player.isGoal(goal) )
+                {
+                    Mydelegate.reachGoal()
+                    isAnimated = false
+                    return
+                }
+                
                 //compileActionAssembly(lines[progLine] as String)
 
                 //progLine = progLine + 1
@@ -219,15 +240,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 else
                 {
+                    // アニメーションの終わり
                     isAnimated = false
+                    Mydelegate.endAnimation()
                 }
             }
             
-            if(player.isGoal(goal) )
-            {
-                gmViewC.gmMaster.showGoal()
-                isAnimated = false
-            }
             //デバッグ情報更新
             debugPrint()
             

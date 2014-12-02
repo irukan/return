@@ -72,7 +72,7 @@ class TitleViewController: UIViewController {
         {
             case "start":
                 self.presentViewController(ad.gameView, animated: true, completion: nil)
-                ad.gameView.initGameScene()
+                ad.gameView.initGameScene("data2")
             case "config":
                 println("config")
             default :
