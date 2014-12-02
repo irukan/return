@@ -54,6 +54,8 @@ class GameViewController: UIViewController, DDEditorDelegate {
         ddEditorCover = UIButton(frame: ddEditor.tblView.tableView.frame)
         ddEditorCover.addTarget(self, action: "pushCover:", forControlEvents: UIControlEvents.TouchDown)
         self.view.addSubview(ddEditorCover)
+        
+
      }
     
 
@@ -70,8 +72,9 @@ class GameViewController: UIViewController, DDEditorDelegate {
         // DebugArea
         self.view.addSubview(debugArea)
         
+        // SKScene
         //scene1
-        gmScene = GameScene(size: CGSizeMake(ad.SWidth, ad.SHeight))
+        gmScene = GameScene(dataName: "data2")
         gmScene.backgroundColor = SKColor.grayColor()
         skView.presentScene(gmScene)
         

@@ -27,47 +27,49 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var isAnimated:Bool!
     
-
-    // 画面初期化時に毎回呼ばれる
-    override func didMoveToView(view: SKView) {
-        
+    
+    init(dataName : NSString) {
         // AppDelegate
         ad = UIApplication.sharedApplication().delegate as AppDelegate
-        
-        // 親であるGameViewController取得
-        gmViewC = ad.gameView
-        
-        
-        //時間。あとで見直す
-        upTime = 0
-        lastUpdate = 0
-
-        isAnimated = false
+        super.init(size: CGSizeMake(ad.SWidth, ad.SHeight))
         
         // sellの分割数は15で固定。今後はmapDataから読み込むようにする
         cell = self.size.width / 15
+
+
+        // 親であるGameViewController取得
+        gmViewC = ad.gameView
+        
+
+        //時間。あとで見直す
+        upTime = 0
+        lastUpdate = 0
+        
+        isAnimated = false
+        
         
         //衝突検出のため、delegateを設定する
         self.physicsWorld.contactDelegate = self
         //四隅に壁
         //self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
-
+        
         // Sceneの名前
         self.name = "GameScene"
-        
-        //MapData読み込み
-        let dataPath = NSBundle.mainBundle().pathForResource("data1", ofType: "dat", inDirectory: "MapData")
 
+        //MapData読み込み
+        let dataPath = NSBundle.mainBundle().pathForResource(dataName, ofType: "dat", inDirectory: "MapData")
+        
         let text: String = String(contentsOfFile:dataPath!, encoding: NSUTF8StringEncoding, error: nil)!
         var indX:Int = 0
         var indY:Int = 0
-        
+
         for line in text.componentsSeparatedByString("\r\n")
         {
-
+            
             for data in line.componentsSeparatedByString(",")
             {
                 //println("\(indX), \(indY)")
+                
                 if(data as NSString == "w")
                 {
                     makeWall(indX, indexY: indY)
@@ -86,18 +88,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 {
                     makeTree(indX, indexY: indY)
                 }
-                else if(data as NSString == "0")
+                else
                 {
                     makeField(indX, indexY: indY)
                 }
-            
+                //原因不明。以下のブロックを入れると、SOurceKitServiceが暴走する
+//                else if(data as NSString == "0")
+//                {
+//                    makeField(indX, indexY: indY)
+//                }
+  
+                
                 indX++
             }
             indX = 0
             indY++
             
         }
+
+    }
+
+
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+
+    // 画面初期化時に毎回呼ばれる
+    override func didMoveToView(view: SKView) {
+        
         // GameMaster
         gmViewC.gmMaster.setScene(self)
         gmViewC.gmMaster.setExecCnt(1)
@@ -118,7 +138,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func makeWall(indexX:Int, indexY:Int)
     {
         // 先ずはField
-        makeField(indexX, indexY: indexY)
+         makeField(indexX, indexY: indexY)
         // Wall
         let wall = MyWall(cellSize: cell, indexX: indexX, indexY: indexY)
         
@@ -128,7 +148,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func makeTree(indexX:Int, indexY:Int)
     {
         // 先ずはField
-        makeField(indexX, indexY: indexY)
+         makeField(indexX, indexY: indexY)
         // Wall
         let tree = MyTree(cellSize: cell, indexX: indexX, indexY: indexY)
         

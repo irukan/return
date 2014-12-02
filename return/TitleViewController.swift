@@ -28,13 +28,14 @@ class TitleViewController: UIViewController {
         
         // Title Scene
         titleScene = SKScene(size: titleView.frame.size)
+        titleScene.name = "title"
         titleView.presentScene(titleScene)
         
         titleScene.backgroundColor = UIColor.whiteColor()
         
         // Title Label
         let title = SKLabelNode(fontNamed: "Arial Bold")
-        title.name = "title"
+        title.name = "titleLbl"
         title.text = "return;"
         title.fontColor = UIColor.orangeColor()
         title.fontSize = 60
@@ -75,7 +76,8 @@ class TitleViewController: UIViewController {
             case "config":
                 println("config")
             default :
-                println("default")
+                // もっといい方法ないか??
+                var i = 0
         }
         
         
